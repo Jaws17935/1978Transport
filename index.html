@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運費計算工具</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .calculator {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: left;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+            font-size: 1.3em;
+        }
+        .location-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .location-box {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .location-box:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transform: translateY(-1px);
+        }
+        .stop-point-box {
+            cursor: pointer;
+        }
+        .stop-point-box:hover {
+            border-color: #f44336;
+        }
+        .stop-point-box::after {
+            content: '✕';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            color: #f44336;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-weight: bold;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(244, 67, 54, 0.1);
+            border-radius: 50%;
+        }
+        .stop-point-box:hover::after {
+            opacity: 1;
+        }
+        .location-box h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 6px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+            font-size: 0.95em;
+        }
+        input {
+            width: 90%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+        }
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+        }
+        .input-row {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .input-row:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transform: translateY(-1px);
+        }
+        .input-row h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 8px;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-row .form-group {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .time-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex-wrap: nowrap;
+            background-color: white;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            width: 90%;
+            margin: 0 auto;
+            position: relative;
+        }
+        .time-input-group input {
+            width: 45%;
+            padding: 3px;
+            text-align: center;
+            font-size: 13px;
+            border: none;
+            border-radius: 0;
+            background-color: transparent;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .time-input-group input::placeholder {
+            text-align: center;
+        }
+        .time-input-group::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background-color: #e0e0e0;
+            transform: translateX(-50%);
+        }
+        .time-input-group span {
+            font-size: 1em;
+            color: #666;
+            white-space: nowrap;
+        }
+        .distance-fuel-row {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 0;
+            width: 100%;
+        }
+        .add-stop-btn, .delete-stop-btn {
+            background-color: #FF9800;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .delete-stop-btn {
+            background-color: #f44336;
+        }
+        .add-stop-btn:hover {
+            background-color: #F57C00;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .delete-stop-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .nav-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background-color: #4285F4;
+            color: white;
+        }
+        .nav-button:hover {
+            background-color: #3367D6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            animation: fadeIn 0.3s ease;
+        }
+        .result h3 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 6px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .result p {
+            margin: 8px 0;
+            color: #555;
+            font-size: 0.95em;
+        }
+        .result p:last-child {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 1.1em;
+        }
+        @media (max-width: 768px) {
+            .location-container {
+                flex-direction: column;
+            }
+            .location-box {
+                min-width: 100%;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+        }
+        @media (min-width: 768px) {
+            .input-row {
+                flex-direction: column;
+            }
+            .input-row .form-group {
+                width: 100%;
+            }
+            .distance-fuel-row {
+                flex-direction: row;
+                gap: 20px;
+                flex: 1;
+            }
+            .distance-fuel-row .form-group {
+                flex: 1;
+            }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .data-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .distance-input-group, .fuel-input-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: nowrap;
+            background-color: white;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            width: 90%;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        .distance-input-group:hover, .fuel-input-group:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transform: translateY(-1px);
+        }
+        .distance-input-group input, .fuel-input-group input {
+            width: 100%;
+            padding: 3px;
+            text-align: center;
+            font-size: 13px;
+            border: none;
+            border-radius: 0;
+            background-color: transparent;
+            margin: 0;
+        }
+        .distance-input-group input:focus, .fuel-input-group input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        .fuel-price-input-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: nowrap;
+            background-color: white;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            width: 90%;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        .fuel-price-input-group:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transform: translateY(-1px);
+        }
+        .fuel-price-input-group input {
+            width: 100%;
+            padding: 3px;
+            text-align: center;
+            font-size: 13px;
+            border: none;
+            border-radius: 0;
+            background-color: transparent;
+            margin: 0;
+        }
+        .fuel-price-link {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 4px 8px;
+            background-color: #f8f9fa;
+            color: #4285F4;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        .fuel-price-link:hover {
+            background-color: #4285F4;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .fuel-price-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background-color: #FF9800;
+            color: white;
+            text-decoration: none;
+        }
+        .fuel-price-btn:hover {
+            background-color: #F57C00;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .copy-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background-color: #9C27B0;
+            color: white;
+        }
+        .copy-btn:hover {
+            background-color: #7B1FA2;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .total-fare {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            width: 90%;
+            margin: 15px auto 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .total-fare p {
+            margin: 0;
+            color: #555;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .total-fare .amount {
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 1.3em;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>運費計算工具</h1>
+        <div class="location-container">
+            <div class="location-box">
+                <h2>出發地資訊</h2>
+                <div class="form-group">
+                    <input type="text" id="startContact" placeholder="聯絡人" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="startPhone" placeholder="聯絡電話" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="startAddress" placeholder="出發地點" required>
+                </div>
+            </div>
+            <div class="button-container">
+                <button onclick="addStopPoint()" class="add-stop-btn">新增中途停靠點</button>
+            </div>
+            <div id="stopPointsContainer">
+                <!-- 中途停靠點將在這裡動態添加 -->
+            </div>
+            <div class="location-box">
+                <h2>目的地資訊</h2>
+                <div class="form-group">
+                    <input type="text" id="destContact" placeholder="聯絡人" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="destPhone" placeholder="聯絡電話" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="destAddress" placeholder="目的地點" required>
+                </div>
+            </div>
+        </div>
+        <div class="input-row">
+            <h2>運費總合計</h2>
+            <div class="form-group">
+                <div class="time-input-group">
+                    <input type="number" id="hours" min="0" placeholder="小時">
+                    <input type="number" id="minutes" min="0" max="59" placeholder="分鐘">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="distance-input-group">
+                    <input type="number" id="distance" required min="0" placeholder="公里">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="fuel-input-group">
+                    <input type="number" id="fuel" value="12.1" required min="0" step="0.1" placeholder="公里/公升">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="fuel-price-input-group">
+                    <input type="number" id="fuelPrice" value="35" required min="0" step="0.1" placeholder="油價">
+                </div>
+            </div>
+            <div id="totalFare" class="total-fare">
+                <p>總運費：<span class="amount">0 元</span></p>
+            </div>
+        </div>
+        <div class="button-group">
+            <a href="https://www.cpc.com.tw/Price.aspx?n=2890" target="_blank" class="fuel-price-btn">本周油價</a>
+            <button onclick="copyRoute()" class="copy-btn">複製行程</button>
+            <button onclick="openGoogleMaps()" class="nav-button">啟動導航</button>
+        </div>
+    </div>
+
+    <script>
+        let stopPointCount = 0;
+
+        // 在頁面加載時添加一個預設的中途停靠點
+        window.onload = function() {
+            updateResult(); // 初始計算
+        };
+
+        function addStopPoint() {
+            if (stopPointCount >= 5) {
+                alert('最多只能新增5個中途停靠點');
+                return;
+            }
+            stopPointCount++;
+            const stopPointContainer = document.getElementById('stopPointsContainer');
+            const stopPointBox = document.createElement('div');
+            stopPointBox.className = 'location-box stop-point-box';
+            stopPointBox.id = `stopPoint${stopPointCount}`;
+            stopPointBox.onclick = function() {
+                if (confirm('請再次確認要刪除此停靠點嗎？')) {
+                    removeStopPoint(stopPointCount);
+                }
+            };
+            stopPointBox.innerHTML = `
+                <h2>中途停靠點${stopPointCount}</h2>
+                <div class="form-group">
+                    <input type="text" id="stop${stopPointCount}Contact" placeholder="聯絡人">
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="stop${stopPointCount}Phone" placeholder="聯絡電話">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="stop${stopPointCount}Address" placeholder="停靠地點">
+                </div>
+            `;
+            stopPointContainer.appendChild(stopPointBox);
+            
+            // 更新新增按鈕狀態
+            const addButton = document.querySelector('.add-stop-btn');
+            if (stopPointCount >= 5) {
+                addButton.disabled = true;
+                addButton.style.opacity = '0.5';
+                addButton.style.cursor = 'not-allowed';
+            }
+        }
+
+        function removeStopPoint(index) {
+            const stopPointBox = document.getElementById(`stopPoint${index}`);
+            if (stopPointBox) {
+                stopPointBox.remove();
+                stopPointCount--;
+                
+                // 重新編號剩餘的停靠點
+                const remainingBoxes = document.querySelectorAll('.location-box');
+                remainingBoxes.forEach((box, i) => {
+                    if (box.id.startsWith('stopPoint')) {
+                        const newIndex = i + 1;
+                        box.id = `stopPoint${newIndex}`;
+                    }
+                });
+            }
+        }
+
+        // 添加輸入監聽器
+        document.getElementById('distance').addEventListener('input', updateResult);
+        document.getElementById('hours').addEventListener('input', updateResult);
+        document.getElementById('minutes').addEventListener('input', updateResult);
+        document.getElementById('fuel').addEventListener('input', updateResult);
+        document.getElementById('fuelPrice').addEventListener('input', updateResult);
+
+        function updateResult() {
+            const distance = parseFloat(document.getElementById('distance').value) || 0;
+            const hours = parseFloat(document.getElementById('hours').value) || 0;
+            const minutes = parseFloat(document.getElementById('minutes').value) || 0;
+            const fuel = parseFloat(document.getElementById('fuel').value) || 0;
+            const fuelPrice = parseFloat(document.getElementById('fuelPrice').value) || 0;
+
+            // 計算總時間（小時）
+            const totalHours = hours + (minutes / 60);
+
+            // 計算各項費用
+            const fuelCost = (distance / fuel) * fuelPrice; // 油費 = (里程/油耗) * 油價
+            const laborCost = totalHours * 200; // 工資 = 時間 * 時薪(200元/小時)
+            const depreciationCost = distance * 2.5; // 車輛損耗 = 里程 * 每公里損耗(2.5元/公里)
+
+            // 計算總運費
+            const totalCost = fuelCost + laborCost + depreciationCost;
+
+            // 更新總運費顯示
+            const totalFareDiv = document.getElementById('totalFare');
+            totalFareDiv.querySelector('.amount').textContent = `${totalCost.toFixed(0).toLocaleString()} 元`;
+        }
+
+        function openGoogleMaps() {
+            const startAddress = document.getElementById('startAddress').value;
+            const destAddress = document.getElementById('destAddress').value;
+            
+            if (!startAddress || !destAddress) {
+                alert('請輸入出發地和目的地地址');
+                return;
+            }
+            
+            // 收集所有中途停靠點
+            const stopPoints = [];
+            for (let i = 1; i <= stopPointCount; i++) {
+                const stopAddress = document.getElementById(`stop${i}Address`);
+                if (stopAddress && stopAddress.value) {
+                    stopPoints.push(stopAddress.value);
+                }
+            }
+
+            // 構建 Google Maps URL
+            let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(startAddress)}&destination=${encodeURIComponent(destAddress)}`;
+            
+            // 如果有中途停靠點，添加為途經點
+            if (stopPoints.length > 0) {
+                url += `&waypoints=${stopPoints.map(point => encodeURIComponent(point)).join('|')}`;
+            }
+
+            // 開啟新視窗
+            window.open(url, '_blank');
+        }
+
+        function copyRoute() {
+            const startContact = document.getElementById('startContact').value;
+            const startPhone = document.getElementById('startPhone').value;
+            const startAddress = document.getElementById('startAddress').value;
+            const destContact = document.getElementById('destContact').value;
+            const destPhone = document.getElementById('destPhone').value;
+            const destAddress = document.getElementById('destAddress').value;
+
+            let routeText = `請確認以下行程資訊：
+
+==========================
+出發地
+姓名：${startContact}
+電話：${startPhone}
+位置：${startAddress}
+
+`;
+
+            // 添加中途停靠點
+            for (let i = 1; i <= stopPointCount; i++) {
+                const stopContact = document.getElementById(`stop${i}Contact`).value;
+                const stopPhone = document.getElementById(`stop${i}Phone`).value;
+                const stopAddress = document.getElementById(`stop${i}Address`).value;
+                
+                if (stopAddress) {
+                    routeText += `==========================
+中途點${i}
+姓名：${stopContact}
+電話：${stopPhone}
+位置：${stopAddress}
+
+`;
+                }
+            }
+
+            routeText += `==========================
+目的地
+姓名：${destContact}
+電話：${destPhone}
+位置：${destAddress}`;
+
+            // 複製到剪貼板
+            navigator.clipboard.writeText(routeText).then(() => {
+                alert('行程資訊已複製到剪貼板');
+            }).catch(err => {
+                console.error('複製失敗:', err);
+                alert('複製失敗，請手動複製');
+            });
+        }
+    </script>
+</body>
+</html>
