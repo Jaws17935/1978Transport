@@ -26,15 +26,14 @@
         h1 {
             text-align: left;
             color: #e0e0e0;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ff6b00;
+            margin-bottom: 0;
             font-size: 1.3em;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: relative;
+            flex: 1;
         }
         .location-container {
             display: flex;
@@ -56,7 +55,6 @@
         .location-box h2 {
             margin-top: 0;
             color: #e0e0e0;
-            border-bottom: 2px solid #ff6b00;
             padding-bottom: 6px;
             font-size: 1em;
             margin-bottom: 10px;
@@ -66,6 +64,17 @@
             justify-content: space-between;
             width: 100%;
             white-space: nowrap;
+            border-bottom: 2px solid #ff6b00;
+        }
+        .location-box h2 span {
+            flex: 1;
+        }
+        .location-box h2 .title-container {
+            display: flex;
+            align-items: center;
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
         .title-container {
             display: flex;
@@ -73,6 +82,8 @@
             width: 100%;
             position: relative;
             margin-bottom: 20px;
+            border-bottom: 2px solid #ff6b00;
+            padding-bottom: 10px;
         }
         .title-text {
             position: relative;
@@ -608,7 +619,7 @@
             margin-left: 10px;
             position: relative;
             z-index: 1;
-            margin-top: -10px;
+            margin-top: 0;
         }
         .date-picker:focus {
             outline: none;
@@ -744,10 +755,6 @@
                 datePicker.value = formattedDate;
             }
 
-            // 設置預設地址
-            document.getElementById('startAddress').value = '東港鎮興東里興東路45號';
-            document.getElementById('destAddress').value = '新營區東山3路77號';
-            
             // 為運費計算相關輸入框添加事件監聽器
             document.getElementById('hours').addEventListener('input', updateResult);
             document.getElementById('minutes').addEventListener('input', updateResult);
