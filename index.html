@@ -79,12 +79,25 @@
         }
         .title-container {
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             width: 100%;
             position: relative;
             margin-bottom: 20px;
             border-bottom: 2px solid #ff6b00;
             padding-bottom: 10px;
+        }
+        .title-container h1 {
+            text-align: left;
+            color: #e0e0e0;
+            margin-bottom: 0;
+            font-size: 1.3em;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+            flex: 1;
+            padding-bottom: 0;
         }
         .title-text {
             position: relative;
@@ -213,6 +226,8 @@
             font-family: 'Microsoft JhengHei', Arial, sans-serif;
             align-self: flex-end;
             margin-bottom: -2px;
+            padding-bottom: 0;
+            line-height: 30px;
         }
         .date-picker:focus {
             outline: none;
@@ -238,13 +253,15 @@
                 max-width: 120px;
                 align-self: flex-end;
                 margin-bottom: -2px;
+                padding-bottom: 0;
+                line-height: 30px;
             }
             .date-picker::-webkit-calendar-picker-indicator {
                 display: none;
             }
             .title-container {
                 flex-wrap: nowrap;
-                padding-bottom: 5px;
+                padding-bottom: 10px;
                 justify-content: space-between;
                 align-items: flex-end;
                 display: flex;
@@ -259,6 +276,8 @@
                 flex: 1;
                 min-width: 0;
                 margin-bottom: 0;
+                padding-bottom: 0;
+                line-height: 1.3em;
             }
         }
         input::placeholder {
