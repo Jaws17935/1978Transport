@@ -158,6 +158,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+            position: relative;
+            width: 100%;
+            transition: margin-bottom 0.3s ease;
+        }
+        .form-group.has-error {
+            margin-bottom: 30px;
         }
         label {
             display: block;
@@ -606,7 +613,10 @@
             max-width: 200px;
             margin: 0 auto;
             transition: all 0.3s ease;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
         .modal-button:hover {
             background-color: #ff8533;
@@ -705,7 +715,7 @@
                     <input type="text" id="startContact" placeholder="聯絡人" required>
                 </div>
                 <div class="form-group">
-                    <input type="number" id="startPhone" placeholder="聯絡電話" required>
+                    <input type="text" id="startPhone" placeholder="聯絡電話" required>
                 </div>
                 <div class="form-group">
                     <input type="text" id="startAddress" placeholder="出發地點" required>
@@ -720,7 +730,7 @@
                     <input type="text" id="destContact" placeholder="聯絡人" required>
                 </div>
                 <div class="form-group">
-                    <input type="number" id="destPhone" placeholder="聯絡電話" required>
+                    <input type="text" id="destPhone" placeholder="聯絡電話" required>
                 </div>
                 <div class="form-group">
                     <input type="text" id="destAddress" placeholder="目的地點" required>
@@ -761,13 +771,66 @@
         // 添加電話號碼驗證功能
         function validatePhoneNumber(input) {
             const phoneNumber = input.value;
-            const isValid = /^\d*$/.test(phoneNumber);
             
-            if (!isValid) {
+            // 移除所有非數字和非連字符的字符
+            const cleanNumber = phoneNumber.replace(/[^\d-]/g, '');
+            
+            // 檢查是否為有效的手機號碼（09開頭，共10碼）
+            const isMobile = /^09\d{8}$/.test(cleanNumber.replace(/-/g, ''));
+            
+            // 檢查是否為有效的市話號碼
+            // 區碼規則：
+            // 2碼區碼：02, 03, 04, 05, 06, 07, 08
+            // 3碼區碼：037, 039, 049, 089
+            // 4碼區碼：0826, 0827
+            // 號碼長度：6-8碼
+            const isLandline = /^(0[2-8]|037|039|049|089|0826|0827)\d{6,8}$/.test(cleanNumber.replace(/-/g, ''));
+            
+            if (!isMobile && !isLandline) {
                 input.classList.add('invalid');
+                // 顯示錯誤提示
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.textContent = '請輸入正確的聯繫方式';
+                errorMessage.style.color = '#f44336';
+                errorMessage.style.fontSize = '12px';
+                errorMessage.style.marginTop = '5px';
+                errorMessage.style.position = 'absolute';
+                errorMessage.style.bottom = '-20px';
+                errorMessage.style.left = '50%';
+                errorMessage.style.transform = 'translateX(-50%)';
+                errorMessage.style.whiteSpace = 'nowrap';
+                errorMessage.style.opacity = '0';
+                errorMessage.style.transition = 'opacity 0.3s ease';
+                
+                // 移除舊的錯誤提示
+                const oldError = input.parentElement.querySelector('.error-message');
+                if (oldError) {
+                    oldError.remove();
+                }
+                
+                input.parentElement.appendChild(errorMessage);
+                input.parentElement.classList.add('has-error');
+                
+                // 添加淡入動畫
+                setTimeout(() => {
+                    errorMessage.style.opacity = '1';
+                }, 10);
             } else {
                 input.classList.remove('invalid');
+                // 移除錯誤提示
+                const errorMessage = input.parentElement.querySelector('.error-message');
+                if (errorMessage) {
+                    errorMessage.style.opacity = '0';
+                    setTimeout(() => {
+                        errorMessage.remove();
+                        input.parentElement.classList.remove('has-error');
+                    }, 300);
+                }
             }
+            
+            // 更新輸入框的值（保留數字和連字符）
+            input.value = cleanNumber;
         }
 
         // 關閉警告模態框
@@ -814,7 +877,7 @@
             totalFareDiv.querySelector('.amount').textContent = '';
             
             // 為所有電話輸入框添加驗證
-            const phoneInputs = document.querySelectorAll('input[type="number"]');
+            const phoneInputs = document.querySelectorAll('input[placeholder="聯絡電話"]');
             phoneInputs.forEach(input => {
                 input.addEventListener('input', function() {
                     validatePhoneNumber(this);
@@ -860,7 +923,7 @@
                     <input type="text" id="stop${stopPointCount}Contact" placeholder="聯絡人">
                 </div>
                 <div class="form-group">
-                    <input type="number" id="stop${stopPointCount}Phone" placeholder="聯絡電話" oninput="validatePhoneNumber(this)">
+                    <input type="text" id="stop${stopPointCount}Phone" placeholder="聯絡電話" oninput="validatePhoneNumber(this)">
                 </div>
                 <div class="form-group">
                     <input type="text" id="stop${stopPointCount}Address" placeholder="停靠地點">
@@ -1075,9 +1138,16 @@
             
             modal.innerHTML = `
                 <div class="modal-content">
-                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                        <a href="tel:0978859078" class="modal-button" style="text-decoration: none; background-color: #ff6b00; display: flex; align-items: center; justify-content: center;">客服專線</a>
-                        <a href="https://line.me/ti/p/O2eWb5quy2" target="_blank" class="modal-button" style="text-decoration: none; background-color: #00c300; display: flex; align-items: center; justify-content: center;">文字客服</a>
+                    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center;">
+                        <a href="tel:0978859078" class="modal-button" style="text-decoration: none; background-color: #ff6b00;">
+                            <span style="margin-right: 8px;">📞</span>客服專線
+                        </a>
+                        <a href="https://line.me/ti/p/O2eWb5quy2" target="_blank" class="modal-button" style="text-decoration: none; background-color: #00c300;">
+                            <span style="margin-right: 8px;">💬</span>文字客服
+                        </a>
+                        <button class="modal-button" style="background-color: #666666;" onclick="this.parentElement.parentElement.parentElement.remove()">
+                            <span style="margin-right: 8px;">🤔</span>我再想想
+                        </button>
                     </div>
                 </div>
             `;
