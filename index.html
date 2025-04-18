@@ -660,16 +660,30 @@
         /* 添加行動裝置特定的日期選擇器樣式 */
         @media (max-width: 768px) {
             .date-picker {
-                width: 100px;
-                height: 35px;
-                font-size: 14px;
+                width: 80px;
+                height: 30px;
+                font-size: 12px;
                 background-color: #333333;
                 border: 1px solid #404040;
                 border-radius: 4px;
                 padding: 0 5px;
+                margin-left: 5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .date-picker::-webkit-calendar-picker-indicator {
                 display: none;
+            }
+            .title-container {
+                flex-wrap: nowrap;
+                padding-bottom: 5px;
+            }
+            .title-container h1 {
+                font-size: 1.1em;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
         input::placeholder {
