@@ -86,18 +86,18 @@
             border-bottom: 2px solid #ff6b00;
             padding-bottom: 10px;
             box-sizing: border-box;
+            justify-content: space-between;
         }
         .title-container h1 {
             text-align: left;
             color: #e0e0e0;
             margin: 0;
             font-size: 1.3em;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
+            width: auto;
+            display: inline-block;
             align-items: flex-end;
             position: relative;
-            flex: 1;
+            flex: 0 1 auto;
             padding: 0;
             line-height: 1;
         }
@@ -217,7 +217,7 @@
             cursor: pointer;
             width: 120px;
             height: 30px;
-            text-align: center;
+            text-align: right;
             margin: 0;
             position: relative;
             z-index: 1;
@@ -230,6 +230,7 @@
             box-sizing: border-box;
             display: inline-block;
             vertical-align: bottom;
+            flex: 0 0 auto;
         }
         .date-picker:focus {
             outline: none;
@@ -258,6 +259,8 @@
                 box-sizing: border-box;
                 display: inline-block;
                 vertical-align: bottom;
+                flex: 0 0 auto;
+                text-align: right;
             }
             .title-container {
                 flex-wrap: nowrap;
@@ -273,12 +276,61 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                margin-right: 5px;
-                flex: 1;
-                min-width: 0;
                 margin: 0;
+                flex: 0 1 auto;
+                min-width: 0;
                 padding: 0;
                 line-height: 1;
+            }
+        }
+        /* 添加平板裝置特定的樣式 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .date-picker {
+                width: 120px;
+                height: 30px;
+                font-size: 12px;
+                background-color: #333333;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                padding: 0 5px;
+                margin: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                min-width: 120px;
+                max-width: 120px;
+                align-self: flex-end;
+                line-height: 30px;
+                box-sizing: border-box;
+                display: inline-block;
+                vertical-align: bottom;
+                flex: 0 0 auto;
+                text-align: right;
+            }
+        }
+        /* 添加桌面裝置特定的樣式 */
+        @media (min-width: 1025px) {
+            .date-picker {
+                width: 120px;
+                height: 30px;
+                font-size: 12px;
+                background-color: #333333;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                padding: 0 5px;
+                margin: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                min-width: 120px;
+                max-width: 120px;
+                align-self: flex-end;
+                line-height: 30px;
+                box-sizing: border-box;
+                display: inline-block;
+                vertical-align: bottom;
+                flex: 0 0 auto;
+                text-align: right;
             }
         }
         input::placeholder {
