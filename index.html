@@ -705,7 +705,7 @@
                     <input type="text" id="startContact" placeholder="聯絡人" required>
                 </div>
                 <div class="form-group">
-                    <input type="tel" id="startPhone" placeholder="聯絡電話" required>
+                    <input type="number" id="startPhone" placeholder="聯絡電話" required>
                 </div>
                 <div class="form-group">
                     <input type="text" id="startAddress" placeholder="出發地點" required>
@@ -720,7 +720,7 @@
                     <input type="text" id="destContact" placeholder="聯絡人" required>
                 </div>
                 <div class="form-group">
-                    <input type="tel" id="destPhone" placeholder="聯絡電話" required>
+                    <input type="number" id="destPhone" placeholder="聯絡電話" required>
                 </div>
                 <div class="form-group">
                     <input type="text" id="destAddress" placeholder="目的地點" required>
@@ -814,10 +814,32 @@
             totalFareDiv.querySelector('.amount').textContent = '';
             
             // 為所有電話輸入框添加驗證
-            const phoneInputs = document.querySelectorAll('input[type="tel"]');
+            const phoneInputs = document.querySelectorAll('input[type="number"]');
             phoneInputs.forEach(input => {
                 input.addEventListener('input', function() {
                     validatePhoneNumber(this);
+                });
+            });
+
+            // 添加 Enter 鍵導航功能
+            const allInputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+            allInputs.forEach((input, index) => {
+                // 設置游標在最後
+                input.addEventListener('focus', function() {
+                    const value = this.value;
+                    this.value = '';
+                    this.value = value;
+                });
+
+                // 添加 Enter 鍵事件
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const nextIndex = index + 1;
+                        if (nextIndex < allInputs.length) {
+                            allInputs[nextIndex].focus();
+                        }
+                    }
                 });
             });
         });
@@ -838,7 +860,7 @@
                     <input type="text" id="stop${stopPointCount}Contact" placeholder="聯絡人">
                 </div>
                 <div class="form-group">
-                    <input type="tel" id="stop${stopPointCount}Phone" placeholder="聯絡電話" oninput="validatePhoneNumber(this)">
+                    <input type="number" id="stop${stopPointCount}Phone" placeholder="聯絡電話" oninput="validatePhoneNumber(this)">
                 </div>
                 <div class="form-group">
                     <input type="text" id="stop${stopPointCount}Address" placeholder="停靠地點">
