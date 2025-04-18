@@ -185,10 +185,80 @@
             background-color: #2d2d2d;
             color: #e0e0e0;
         }
-        input:focus {
-            border-color: #ff6b00;
+        /* 覆蓋日期選擇器的特定樣式 */
+        input[type="date"] {
+            width: auto;
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            border: none;
+        }
+        .date-picker {
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            color: #e0e0e0;
+            font-size: 12px;
+            cursor: pointer;
+            width: 120px;
+            height: 30px;
+            text-align: center;
+            margin-left: 10px;
+            position: relative;
+            z-index: 1;
+            margin-top: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+        }
+        .date-picker:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+        }
+        .date-picker::-webkit-calendar-picker-indicator {
+            display: none;
+        }
+        /* 添加行動裝置特定的日期選擇器樣式 */
+        @media (max-width: 768px) {
+            .date-picker {
+                width: 120px;
+                height: 30px;
+                font-size: 12px;
+                background-color: #333333;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                padding: 0 5px;
+                margin-left: 5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                min-width: 120px;
+                max-width: 120px;
+            }
+            .date-picker::-webkit-calendar-picker-indicator {
+                display: none;
+            }
+            .title-container {
+                flex-wrap: nowrap;
+                padding-bottom: 5px;
+                justify-content: space-between;
+                align-items: center;
+                display: flex;
+                width: 100%;
+            }
+            .title-container h1 {
+                font-size: 1.1em;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-right: 5px;
+                flex: 1;
+                min-width: 0;
+            }
+        }
+        input::placeholder {
+            color: #666;
+            opacity: 0.8;
         }
         .input-row {
             display: flex;
@@ -355,27 +425,6 @@
             font-weight: bold;
             color: #4CAF50;
             font-size: 1.1em;
-        }
-        @media (max-width: 768px) {
-            .location-container {
-                flex-direction: column;
-            }
-            .location-box {
-                min-width: 100%;
-            }
-            .button-group {
-                flex-direction: column;
-                gap: 8px;
-                padding: 0 15px;
-                margin: 15px 0;
-            }
-            .nav-button, .fuel-price-btn, .copy-btn {
-                width: 100%;
-                margin: 0;
-                padding: 10px 0;
-                font-size: 14px;
-                min-width: unset;
-            }
         }
         @media (min-width: 768px) {
             .input-row {
@@ -632,63 +681,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-        .date-picker {
-            padding: 0;
-            border: none;
-            background-color: transparent;
-            color: #e0e0e0;
-            font-size: 12px;
-            cursor: pointer;
-            width: 80px;
-            height: 30px;
-            text-align: center;
-            margin-left: 10px;
-            position: relative;
-            z-index: 1;
-            margin-top: 0;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        .date-picker:focus {
-            outline: none;
-        }
-        .date-picker::-webkit-calendar-picker-indicator {
-            display: none;
-        }
-        /* 添加行動裝置特定的日期選擇器樣式 */
-        @media (max-width: 768px) {
-            .date-picker {
-                width: 80px;
-                height: 30px;
-                font-size: 12px;
-                background-color: #333333;
-                border: 1px solid #404040;
-                border-radius: 4px;
-                padding: 0 5px;
-                margin-left: 5px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .date-picker::-webkit-calendar-picker-indicator {
-                display: none;
-            }
-            .title-container {
-                flex-wrap: nowrap;
-                padding-bottom: 5px;
-            }
-            .title-container h1 {
-                font-size: 1.1em;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
-        input::placeholder {
-            color: #666;
-            opacity: 0.8;
         }
     </style>
 </head>
